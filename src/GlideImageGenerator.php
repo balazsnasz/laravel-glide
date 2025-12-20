@@ -6,7 +6,8 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Illuminate\View\ComponentAttributeBag;
-use Intervention\Image\Facades\Image;
+use Intervention\Image\ImageManager;
+use RuntimeException;
 
 class GlideImageGenerator
 {
@@ -94,7 +95,7 @@ class GlideImageGenerator
     protected function getImageWidth(string $path): ?int
     {
         return Cache::rememberForever("glide::image-generator.image-width.{$path}", function () use ($path) {
-            return rescue(fn () => Image::make(public_path($path))->width());
+            return rescue(fn () => $this->getImageManager()->read(public_path($path))->width());
         });
     }
 
@@ -108,6 +109,19 @@ class GlideImageGenerator
     protected function isGlideSupported(string $path): bool
     {
         return ! Str::endsWith($path, ['.svg']);
+    }
+
+    protected function getImageManager(): ImageManager
+    {
+        if (extension_loaded('gd')) {
+            return ImageManager::gd();
+        }
+
+        if (extension_loaded('imagick')) {
+            return ImageManager::imagick();
+        }
+
+        throw new RuntimeException('No supported image driver (GD or Imagick) is installed.');
     }
 
     public function getSourcePath(): string
