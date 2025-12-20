@@ -2,6 +2,10 @@
 
 All notable changes to `ralphjsmit/laravel-glide` will be documented in this file.
 
+## 2.0.0 - 2025-12-20
+
+- Feat: Glide V3 support by @lao9s.
+
 ## 1.3.4 - 2025-07-12
 
 - Feat: ability to sign Glide image URLs.
