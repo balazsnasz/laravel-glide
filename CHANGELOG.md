@@ -2,6 +2,10 @@
 
 All notable changes to `ralphjsmit/laravel-glide` will be documented in this file.
 
+## 2.1.0 - 2026-03-14
+
+- Feat: disk support
+
 ## 2.0.0 - 2025-12-20
 
 - Feat: Glide V3 support by @lao9s.
