@@ -126,7 +126,7 @@ class GlideImageGenerator
         }
 
         return config('glide.route.signed')
-            ? Url::signedRoute('glide.generate', $params)
+            ? URL::signedRoute('glide.generate', $params)
             : route('glide.generate', $params);
     }
 
