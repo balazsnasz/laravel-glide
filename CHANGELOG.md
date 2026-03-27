@@ -2,6 +2,10 @@
 
 All notable changes to `ralphjsmit/laravel-glide` will be documented in this file.
 
+## 2.2.0 - 2026-03-27
+
+- Feat: Laravel 13 support
+
 ## 2.1.0 - 2026-03-14
 
 - Feat: disk support
