@@ -23,4 +23,6 @@ return [
          */
         'signed' => false,
     ],
+
+    'grow' => false,
 ];
