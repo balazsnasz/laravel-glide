@@ -81,6 +81,14 @@ class GlideImageGenerator
             10000,
         ]);
 
+        // The asset() and other functions require relative URLs.
+        // Remove domain (only for current site) from the beginning of the URL.
+        // Keep external absolute URLs untouched.
+        $currentDomain = url('/');
+        if (str_starts_with($path, $currentDomain)) {
+            $path = substr($path, strlen($currentDomain) + 1);
+        }
+
         $imageWidth = $this->getImageWidth($path, $disk);
 
         $scale = $scale
