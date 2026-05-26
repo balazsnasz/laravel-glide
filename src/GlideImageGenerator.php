@@ -96,6 +96,10 @@ class GlideImageGenerator
 
         return $scale
             ->mapWithKeys(function (int $width) use ($path, $disk): array {
+                // Replace spaces in generated file names to URL encoded strings (%20).
+                // File names containing spaces doesn't work with Glide without this.
+                $path = str_replace(' ', '%20', $path);
+
                 return [$width => $this->generateUrl($path, ['width' => $width], $disk)];
             })
             ->map(fn (string $src, int $width) => "{$src} {$width}w")
