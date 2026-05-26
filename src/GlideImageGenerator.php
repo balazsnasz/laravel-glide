@@ -94,8 +94,20 @@ class GlideImageGenerator
             $scale->push($maxWidth);
         }
 
+        // Push the exact image width if it's larger than the last scale item,
+        // so the image isn't served smaller than the original.
+        // Only do this if the difference with the last item is bigger than 50px.
+        // Otherwise, the additional provided type is not so useful.
+        if ($imageWidth && ($imageWidth - $scale->last()) > 50) {
+            $scale->push($imageWidth);
+        }
+
         return $scale
-            ->mapWithKeys(function (int $width) use ($path, $disk): array {
+            ->mapWithKeys(function (int $width) use ($path, $disk, $imageWidth): array {
+                if ($imageWidth && $width === $imageWidth) {
+                    return [$width => asset($path)];
+                }
+
                 return [$width => $this->generateUrl($path, ['width' => $width], $disk)];
             })
             ->map(fn (string $src, int $width) => "{$src} {$width}w")
