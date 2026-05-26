@@ -151,7 +151,21 @@ class GlideImageGenerator
 
     protected function isGlideSupported(string $path): bool
     {
-        return ! Str::endsWith($path, ['.svg']);
+        // SVG images are not supported by Glide.
+        if (Str::endsWith($path, ['.svg'])) {
+            return false;
+        }
+
+        // Don't enable Glide for absolute external links as it can't generate
+        // responsive sizes for these URLs.
+        $currentDomain = url("/");
+        if (
+            Str::startsWith($path, ['http://', 'https://']) &&
+            ! Str::startsWith($path, $currentDomain)) {
+            return false;
+        }
+
+        return true;
     }
 
     protected function getImageManager(): ImageManager
