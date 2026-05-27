@@ -63,23 +63,7 @@ class GlideImageGenerator
 
     protected function getSrcsetAttribute(string $path, ?int $maxWidth, ?string $disk = null): string
     {
-        $scale = collect([
-            400,
-            800,
-            1200,
-            1600,
-            2000,
-            2500,
-            3000,
-            3500,
-            4000,
-            5000,
-            6000,
-            7000,
-            8000,
-            9000,
-            10000,
-        ]);
+        $scale = collect(config('glide.scales'));
 
         $imageWidth = $this->getImageWidth($path, $disk);
 

@@ -9,6 +9,24 @@ return [
      */
     'default_source_disk' => null,
 
+    'scales' => [
+        400,
+        800,
+        1200,
+        1600,
+        2000,
+        2500,
+        3000,
+        3500,
+        4000,
+        5000,
+        6000,
+        7000,
+        8000,
+        9000,
+        10000,
+    ],
+
     'route' => [
         /**
          * The domain that will be used to generate the Glide URLs.
