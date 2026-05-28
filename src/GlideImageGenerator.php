@@ -63,23 +63,7 @@ class GlideImageGenerator
 
     protected function getSrcsetAttribute(string $path, ?int $maxWidth, ?string $disk = null): string
     {
-        $scale = collect([
-            400,
-            800,
-            1200,
-            1600,
-            2000,
-            2500,
-            3000,
-            3500,
-            4000,
-            5000,
-            6000,
-            7000,
-            8000,
-            9000,
-            10000,
-        ]);
+        $scale = collect(config('glide.scales'));
 
         $imageWidth = $this->getImageWidth($path, $disk);
 
@@ -103,6 +87,10 @@ class GlideImageGenerator
 
         return $scale
             ->mapWithKeys(function (int $width) use ($path, $disk, $imageWidth): array {
+                // URL-encode each path segment so special characters (spaces, #, ?, &, etc.)
+                // in file names work with Glide. We encode per-segment to preserve the slashes.
+                $path = implode('/', array_map('rawurlencode', explode('/', $path)));
+
                 if ($imageWidth && $width === $imageWidth) {
                     return [$width => asset($path)];
                 }
