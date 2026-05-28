@@ -9,6 +9,9 @@ return [
      */
     'default_source_disk' => null,
 
+    /**
+     * The default image scales to generate.
+     */
     'scales' => [
         400,
         800,
