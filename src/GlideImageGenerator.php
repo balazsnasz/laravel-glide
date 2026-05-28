@@ -2,6 +2,7 @@
 
 namespace RalphJSmit\Laravel\Glide;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
@@ -67,15 +68,27 @@ class GlideImageGenerator
 
         $imageWidth = $this->getImageWidth($path, $disk);
 
+        $upscaleEnabled = config('glide.upscale_enabled');
+
         $scale = $scale
             ->when($maxWidth)->reject(fn (int $width) => $width > $maxWidth)
-            // We will up-scale an image up to 2x it's original size. Above that it has no use anymore.
-            ->when($imageWidth)->reject(fn (int $width) => $width > ($imageWidth * 2));
+            ->when(
+                $upscaleEnabled,
+                // We will up-scale an image up to 2x it's original size. Above that it has no use anymore.
+                fn (Collection $scale) => $scale->when($imageWidth)->reject(fn (int $width) => $width > ($imageWidth * 2)),
+                // When upscaling is disabled, we should not generate images larger than the original image.
+                fn (Collection $scale) => $scale->when($imageWidth)->reject(fn (int $width) => $width > $imageWidth),
+            );
 
         // Push a final version with exactly the correct max-width if the difference with the last item
         // in the scale is bigger than 50px. Otherwise, the additional provided type is not so useful.
         if ($maxWidth && ($maxWidth - $scale->last()) > 50) {
-            $scale->push($maxWidth);
+            // When upscaling is disabled, never push a width larger than the original image.
+            $pushWidth = (! $upscaleEnabled && $imageWidth) ? min($maxWidth, $imageWidth) : $maxWidth;
+
+            if (($pushWidth - $scale->last()) > 50) {
+                $scale->push($pushWidth);
+            }
         }
 
         // We will push the exact original image width onto the scale so the image is never served
