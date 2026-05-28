@@ -9,6 +9,29 @@ return [
      */
     'default_source_disk' => null,
 
+    'route' => [
+        /**
+         * The domain that will be used to generate the Glide URLs.
+         */
+        'domain' => null,
+
+        /**
+         * Whether the generated Glide URLs should be signed.
+         * For some browsers this differing query string
+         * might prevent browser caching of the image,
+         * but major browsers appear to handle fine.
+         */
+        'signed' => false,
+    ],
+
+    /**
+     * By default, images receive a `max-width: {originalImageWidth}` rule,
+     * so that CSS will not upscale them beyond their original width. This
+     * can be overridden on a per-image basis using the `grow` function
+     * parameter. However, it can also be configured globally here.
+     */
+    'grow' => false,
+
     /**
      * The default image scales to generate.
      */
@@ -29,23 +52,6 @@ return [
         9000,
         10000,
     ],
-
-    'route' => [
-        /**
-         * The domain that will be used to generate the Glide URLs.
-         */
-        'domain' => null,
-
-        /**
-         * Whether the generated Glide URLs should be signed.
-         * For some browsers this differing query string
-         * might prevent browser caching of the image,
-         * but major browsers appear to handle fine.
-         */
-        'signed' => false,
-    ],
-
-    'grow' => false,
 
     /**
      * By default, upscaling is enabled up to 2x the original image size.
