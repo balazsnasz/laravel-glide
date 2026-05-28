@@ -80,6 +80,10 @@ class GlideImageGenerator
 
         return $scale
             ->mapWithKeys(function (int $width) use ($path, $disk): array {
+                // URL-encode each path segment so special characters (spaces, #, ?, &, etc.)
+                // in file names work with Glide. We encode per-segment to preserve the slashes.
+                $path = implode('/', array_map('rawurlencode', explode('/', $path)));
+
                 return [$width => $this->generateUrl($path, ['width' => $width], $disk)];
             })
             ->map(fn (string $src, int $width) => "{$src} {$width}w")
