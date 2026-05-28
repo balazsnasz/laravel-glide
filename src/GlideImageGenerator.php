@@ -70,7 +70,7 @@ class GlideImageGenerator
         $scale = $scale
             ->when($maxWidth)->reject(fn (int $width) => $width > $maxWidth);
         // If upscaling is disabled (e.g. config parameter set to true), we should not generate images larger than the original image.
-        if (config('glide.disable_upscaling')) {
+        if (! config('glide.upscale_enabled')) {
             $scale = $scale->when($imageWidth)->reject(fn (int $width) => $width > ($imageWidth));
         } else {
             // We will up-scale an image up to 2x it's original size. Above that it has no use anymore.
