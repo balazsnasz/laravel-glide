@@ -78,11 +78,22 @@ class GlideImageGenerator
             $scale->push($maxWidth);
         }
 
+        // We will push the exact original image width onto the scale so the image is never served
+        // smaller than its source. We only do this when the difference with the last item is bigger
+        // than 50px. Otherwise, the additional provided source is not so useful.
+        if ($imageWidth && ($imageWidth - $scale->last()) > 50) {
+            $scale->push($imageWidth);
+        }
+
         return $scale
-            ->mapWithKeys(function (int $width) use ($path, $disk): array {
+            ->mapWithKeys(function (int $width) use ($path, $disk, $imageWidth): array {
                 // URL-encode each path segment so special characters (spaces, #, ?, &, etc.)
                 // in file names work with Glide. We encode per-segment to preserve the slashes.
                 $path = implode('/', array_map('rawurlencode', explode('/', $path)));
+
+                if ($imageWidth && $width === $imageWidth) {
+                    return [$width => asset($path)];
+                }
 
                 return [$width => $this->generateUrl($path, ['width' => $width], $disk)];
             })
