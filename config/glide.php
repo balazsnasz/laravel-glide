@@ -46,4 +46,11 @@ return [
     ],
 
     'grow' => false,
+
+    /**
+     * By default, upscaling is enabled up to 2x the original image size.
+     * This is due to Retina / HiDPI-displays, where it can be crisper
+     * to serve an upscaled interpolated Glide image than the original.
+     */
+    'upscale_enabled' => true,
 ];
