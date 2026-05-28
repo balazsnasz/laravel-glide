@@ -44,4 +44,6 @@ return [
          */
         'signed' => false,
     ],
+
+    'disable_upscaling' => false,
 ];

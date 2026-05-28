@@ -68,9 +68,14 @@ class GlideImageGenerator
         $imageWidth = $this->getImageWidth($path, $disk);
 
         $scale = $scale
-            ->when($maxWidth)->reject(fn (int $width) => $width > $maxWidth)
-            // We never up-scale: generating images larger than the original is wasteful and lowers quality.
-            ->when($imageWidth)->reject(fn (int $width) => $width > $imageWidth);
+            ->when($maxWidth)->reject(fn (int $width) => $width > $maxWidth);
+        // If upscaling is disabled (e.g. config parameter set to true), we should not generate images larger than the original image.
+        if (config('glide.disable_upscaling')) {
+            $scale = $scale->when($imageWidth)->reject(fn (int $width) => $width > ($imageWidth));
+        } else {
+            // We will up-scale an image up to 2x it's original size. Above that it has no use anymore.
+            $scale = $scale->when($imageWidth)->reject(fn (int $width) => $width > ($imageWidth * 2));
+        }
 
         // Push a final version with exactly the correct max-width if the difference with the last item
         // in the scale is bigger than 50px. Otherwise, the additional provided type is not so useful.
